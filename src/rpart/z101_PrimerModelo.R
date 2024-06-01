@@ -7,7 +7,7 @@ require("rpart")
 require("rpart.plot")
 
 # Aqui se debe poner la carpeta de la materia de SU computadora local
-setwd("X:\\gdrive\\itba2024a\\") # Establezco el Working Directory
+setwd("C:/Users/flori/Desktop/ITBA DS/datamining") # Establezco el Working Directory
 
 # cargo el dataset
 dataset <- fread("./datasets/dataset_pequeno.csv")
@@ -39,8 +39,7 @@ prp(modelo,
 prediccion <- predict(
         object = modelo,
         newdata = dapply,
-        type = "prob"
-)
+        type = "prob")
 
 # prediccion es una matriz con TRES columnas,
 # llamadas "BAJA+1", "BAJA+2"  y "CONTINUA"
