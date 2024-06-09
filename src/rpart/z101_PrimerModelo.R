@@ -29,11 +29,12 @@ modelo <- rpart(
 
 
 # grafico el arbol
+pdf("arbolito_010.pdf") ### esto es para generar pdfs
 prp(modelo,
         extra = 101, digits = -5,
         branch = 1, type = 4, varlen = 0, faclen = 0
 )
-
+dev.off() ## para generar pdfs
 
 # aplico el modelo a los datos nuevos
 prediccion <- predict(

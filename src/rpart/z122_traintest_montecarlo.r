@@ -119,7 +119,7 @@ tb_salida
 
 # finalmente calculo la media (promedio)  de las ganancias
 tb_salida[, mean(ganancia_test)]
-
+ 
 # calculo todos los promedios
 tb_salida[, lapply(.SD, mean)]
 
