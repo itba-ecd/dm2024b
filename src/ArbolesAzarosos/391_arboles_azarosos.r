@@ -21,17 +21,17 @@ PARAM$experimento <- 3910
 # cambiar aqui por SUS corridas 
 #  segun lo que indica la  Planilla Colaborativa
 PARAM$corridas <- data.table( 
-  "cp" = c( -1, -1,-1,-1,-1,-1),
-  "minsplit" = c( 100, 100, 250, 500, 1000, 1000),
-  "minbucket" = c( 5, 5, 50, 50, 100, 100),
-  "maxdepth" = c( 6, 8, 8, 10, 10, 6 )
-
+  "cp" = c( -1),
+  "minsplit" = c( 50),
+  "minbucket" = c( 20),
+  "maxdepth" = c( 8)
+  
 )
 
 # parametros  arbol
 # entreno cada arbol con solo 50% de las variables variables
 #  por ahora, es fijo
-PARAM$feature_fraction <- 0.5
+PARAM$feature_fraction <- 0.8
 
 
 # voy a generar 500 arboles,
@@ -43,7 +43,7 @@ PARAM$num_trees_max <- 500
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-setwd("~/buckets/b1/") # Establezco el Working Directory
+#setwd("~/buckets/b1/") # Establezco el Working Directory
 
 # cargo MI semilla, que esta en MI bucket
 tabla_semillas <- fread( "./datasets//mis_semillas.txt" )
@@ -57,7 +57,7 @@ dataset <- fread("./datasets/dataset_pequeno.csv")
 dir.create("./exp/", showWarnings = FALSE)
 carpeta_experimento <- paste0("./exp/KA", PARAM$experimento, "/")
 dir.create(paste0("./exp/KA", PARAM$experimento, "/"),
-  showWarnings = FALSE
+           showWarnings = FALSE
 )
 
 setwd(carpeta_experimento)
@@ -86,43 +86,43 @@ campos_buenos <- copy(setdiff(colnames(dtrain), c("clase_ternaria")))
 
 # Genero las salidas
 for( icorrida in seq(nrow(PARAM$corridas)) ){
-
+  
   cat( "Corrida ", icorrida, " ; " )
-
+  
   # aqui se va acumulando la probabilidad del ensemble
   dapply[, prob_acumulada := 0]
-
+  
   # los parametros que voy a utilizar para rpart
   param_rpart <- PARAM$corridas[ icorrida ]
-
+  
   set.seed(ksemilla_azar) # Establezco la semilla aleatoria
-
+  
   for (arbolito in seq(PARAM$num_trees_max) ) {
     qty_campos_a_utilizar <- as.integer(length(campos_buenos)
-       * PARAM$feature_fraction)
-
+                                        * PARAM$feature_fraction)
+    
     campos_random <- sample(campos_buenos, qty_campos_a_utilizar)
-
+    
     # paso de un vector a un string con los elementos
     # separados por un signo de "+"
     # este hace falta para la formula
     campos_random <- paste(campos_random, collapse = " + ")
-
+    
     # armo la formula para rpart
     formulita <- paste0("clase_ternaria ~ ", campos_random)
-
+    
     # genero el arbol de decision
     modelo <- rpart(formulita,
-      data = dtrain,
-      xval = 0,
-      control = param_rpart
+                    data = dtrain,
+                    xval = 0,
+                    control = param_rpart
     )
-
+    
     # aplico el modelo a los datos que no tienen clase
     prediccion <- predict(modelo, dapply, type = "prob")
-
+    
     dapply[, prob_acumulada := prob_acumulada + prediccion[, "BAJA+2"]]
-
+    
     if (arbolito %in% grabar) {
       # Genero la entrega para Kaggle
       umbral_corte <- (1 / 40) * arbolito
@@ -130,25 +130,25 @@ for( icorrida in seq(nrow(PARAM$corridas)) ){
         "numero_de_cliente" = dapply[, numero_de_cliente],
         "Predicted" = as.numeric(dapply[, prob_acumulada] > umbral_corte)
       )) # genero la salida
-
+      
       nom_arch_kaggle <- paste0(
         "KA", PARAM$experimento, "_",
         icorrida, "_",
         sprintf("%.3d", arbolito), # para que tenga ceros adelante
         ".csv"
       )
-
+      
       # grabo el archivo 
       fwrite(entrega,
-        file = nom_arch_kaggle,
-        sep = ","
+             file = nom_arch_kaggle,
+             sep = ","
       )
-
-
+      
+      
       # subo a Kaggle
       l1 <- "#!/bin/bash \n"
       l2 <- "source ~/.venv/bin/activate  \n"
-
+      
       l3 <- paste0( "kaggle competitions submit   -c itba-data-mining-2024-cohorteb ")
       l3 <- paste0( l3, " -f ", nom_arch_kaggle )
       l3 <- paste0( l3,  " -m ",  "\"", "exp=", PARAM$experimento,  " , ")
@@ -158,16 +158,16 @@ for( icorrida in seq(nrow(PARAM$corridas)) ){
       l3 <- paste0( l3,  "maxdepth=", param_rpart$maxdepth, ", ")
       l3 <- paste0( l3,  "cp=", param_rpart$cp,  ", ")
       l3 <- paste0( l3,  nom_arch_kaggle , "\"",  "\n")
-
+      
       l4 <- "deactivate \n"
-
+      
       cat( paste0( l1, l2, l3, l4 ) , file = "subir.sh" )
       Sys.chmod( "subir.sh", mode = "744", use_umask = TRUE)
-
+      
       system( "./subir.sh" )
-
+      
     }
-
+    
     cat(arbolito, " ")
   }
 }
@@ -180,4 +180,3 @@ l4 <- "deactivate \n"
 cat( paste0( l1, l2, l3, l4 ) , file = "bajar.sh" )
 Sys.chmod( "bajar.sh", mode = "744", use_umask = TRUE)
 system( "./bajar.sh" )
-
