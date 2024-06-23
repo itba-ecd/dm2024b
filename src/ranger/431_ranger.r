@@ -12,10 +12,10 @@ require("randomForest") # solo se usa para imputar nulos
 # "mtry" = 30, cantidad de variables que evalua para hacer un split
 #  generalmente sqrt(ncol(dtrain))
 param <- list(
-  "num.trees" = 400, # cantidad de arboles
-  "mtry" = 25,
-  "min.node.size" = 60, # tamaño minimo de las hojas
-  "max.depth" = 15 # 0 significa profundidad infinita
+  "num.trees" = 376, # cantidad de arboles
+  "mtry" = 13,
+  "min.node.size" = 601, # tamaño minimo de las hojas
+  "max.depth" = 18 # 0 significa profundidad infinita
 )
 
 #------------------------------------------------------------------------------
