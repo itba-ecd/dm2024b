@@ -13,7 +13,7 @@ require("lightgbm")
 PARAM <- list()
 PARAM$experimento <- "KA4540"
 
-PARAM$input$dataset <- "~/datasets/dataset_pequeno.csv"
+PARAM$input$dataset <- "./datasets/dataset_pequeno.csv"
 PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
@@ -30,12 +30,13 @@ PARAM$finalmodel$max_bin <- 31
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
-setwd("~/buckets/b1")
+#setwd("~/buckets/b1")
 
 # cargo MI semilla, que esta en MI bucket
-tabla_semillas <- fread( "./datasets//mis_semillas.txt" )
-ksemilla_azar <- tabla_semillas[ 1, semilla ]  # 1 es mi primer semilla
-
+#tabla_semillas <- fread( "./datasets//mis_semillas.txt" )
+#109977 ,104551, 410553, 552587, 895531
+#ksemilla_azar <- tabla_semillas[ 1, semilla ]  # 1 es mi primer semilla
+ksemilla_azar <- 109977
 
 # cargo el dataset donde voy a entrenar
 dataset <- fread(PARAM$input$dataset, stringsAsFactors = TRUE)
