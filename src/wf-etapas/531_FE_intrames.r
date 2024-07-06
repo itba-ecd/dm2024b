@@ -112,7 +112,106 @@ AgregarVariables_IntraMes <- function(dataset) {
   dataset[, vmr_mpagominimo := vm_mpagominimo / vm_mlimitecompra]
 
   # Aqui debe usted agregar sus propias nuevas variables
+  
+  #1
+  dataset[, ctrx_quarter_normalizado2 := as.numeric(ctrx_quarter) ]
+  dataset[cliente_antiguedad == 1, ctrx_quarter_normalizado2 := ctrx_quarter * 3]
+  dataset[cliente_antiguedad == 2, ctrx_quarter_normalizado2 := ctrx_quarter * 1,5]
+  
+  #2
+  dataset[, Masterpagominimocubierto := Master_mpagominimo /Master_mpagado]
+  
+  #3
+  dataset[, Visapagominimocubierto := Visa_mpagominimo /Visa_mpagado]
+  
+  #4
+  dataset[, mtotalactivos := rowSums(cbind(mcuentas_saldo, mplazo_fijo_dolares, mplazo_fijo_pesos, minversion1_pesos, minversion1_dolares, minversion2), na.rm = TRUE)]
 
+  #5
+  dataset[, mtotalpasivos := rowSums(cbind(Visa_msaldopesos, Master_msaldototal, mprestamos_personales, mprestamos_prendarios, mprestamos_hipotecarios), na.rm = TRUE)]
+  
+  #6
+  dataset[, ctotaltrx := rowSums(cbind(ctarjeta_debito_transacciones, ctarjeta_visa_transacciones, ctarjeta_master_transacciones, cpagodeservicios, cpagomiscuentas, cforex, cforex_buy, cforex_sell, ctransferencias_emitidas, cextraccion_autoservicio, ccheques_emitidos, ccallcenter_transacciones, chomebanking_transacciones, ccajas_transacciones, ccajas_consultas, ccajas_depositos, ccajas_extracciones, ccajas_otras, catm_trx, catm_trx_other, cmobile_app_trx), na.rm = TRUE)]
+  
+  #7
+  dataset[, ctotalprod := rowSums(cbind(ccuenta_corriente, ccaja_ahorro, ctarjeta_debito, ctarjeta_visa, ctarjeta_master, cprestamos_personales, cprestamos_prendarios, cprestamos_hipotecarios, cplazo_fijo, cinversion1, cinversion2, cseguro_vida, cseguro_auto, cseguro_vivienda, cseguro_accidentes_personales, ccaja_seguridad), na.rm = TRUE)]
+  
+  #8
+  dataset[, redadant := cliente_antiguedad /(cliente_edad*12)]
+  
+  #9
+  dataset[, rhiphab:= mprestamos_hipotecarios /mpayroll]
+  
+  #10
+  dataset[, rhippas:= mprestamos_hipotecarios /mtotalpasivos]
+  
+  #11
+  dataset[, ctotalpasivos := rowSums(cbind(ctarjeta_visa, ctarjeta_master, cprestamos_personales, cprestamos_prendarios, cprestamos_hipotecarios), na.rm = TRUE)]
+  
+  #12
+  dataset[, ppasiv:= mtotalpasivos  /ctotalpasivos ]
+  
+  #13
+  dataset[, pconsumotc:= vm_mconsumototal  / vm_cconsumos ]
+  
+  #14
+  dataset[, rconstchab:= vm_mconsumototal  / mpayroll ]
+  
+  #15
+  dataset[, rpconstchab:= pconsumotc  / mpayroll ]
+  
+  #16
+  dataset[, rconstcmean:= vm_mconsumototal  / (mean(dataset$vm_mconsumototal, na.rm = TRUE)) ]
+  
+  #17
+  dataset <- dataset %>% mutate(cliente_catedad = case_when( cliente_edad >= 0 & cliente_edad <= 30 ~ 1, cliente_edad > 30 & cliente_edad <= 50 ~ 2, cliente_edad > 50 & cliente_edad <= 65 ~ 3, cliente_edad > 65 ~ 4, TRUE ~ NA_real_  ))
+  
+  #18
+  dataset[, rsaldomov:= mcuentas_saldo  / ctrx_quarter]
+  
+  #19
+  dataset[, rdebmov:= (ctarjeta_debito_transacciones*3)  / ctrx_quarter]
+  
+  #20
+  dataset[, rhbmov:= (chomebanking_transacciones*3)  / ctrx_quarter]
+  
+  #21
+  dataset[, rcajmov:= (ccajas_transacciones*3)  / ctrx_quarter]
+  
+  #22
+  dataset[, rcajotmov:= (ccajas_otras*3)  / ctrx_quarter]
+  
+  #23
+  dataset[, catmtot_trx := rowSums(cbind(catm_trx, catm_trx_other), na.rm = TRUE)]
+  
+  #24
+  dataset[, ratmmov:= (catmtot_trx *3)  / ctrx_quarter]
+  
+  #25
+  dataset[, rhabmov:= (mpayroll *3)  / ctrx_quarter]
+  
+  #26
+  dataset[, phab:= mpayroll   / cpayroll_trx]
+  
+  #27
+  dataset[, rrentmov:= (mrentabilidad*3)  / ctrx_quarter]
+  
+  #28
+  dataset[, rmaractpas:= mactivos_margen / mpasivos_margen]
+  
+  #29
+  dataset[, ctotalactivos := rowSums(cbind(ccuenta_corriente, ccaja_ahorro, cplazo_fijo, cinversion1, cinversion2), na.rm = TRUE)]
+  
+  #30
+  dataset[, pact:= mtotalactivos  /ctotalactivos ]
+  
+  #31
+  dataset[, redadant :=  pact /cliente_edad]
+  
+  #32
+  dataset[, redadant :=  ppasiv /cliente_edad]
+  
+  
   # valvula de seguridad para evitar valores infinitos
   # paso los infinitos a NULOS
   infinitos <- lapply(
