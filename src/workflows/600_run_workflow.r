@@ -23,4 +23,4 @@ correr_workflow <- function( wf_scriptname )
 #------------------------------------------------------------------------------
 
 # aqui efectivamente llamo al workflow
-correr_workflow( "src/workflows/C3619_workflow_base_f202109.r" )
+correr_workflow( "src/workflows/C4619_workflow_base_f202109.r" )
