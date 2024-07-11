@@ -14,7 +14,7 @@ A partir de un workflow que utiliza light GBM como modelo predictivo tuvimos que
 - [Video del experimento](https://www.youtube.com/watch?v=dNkziagnSHc)
 
 **Integrantes**:
-- [Maria Constanza Florio](www.linkedin.com/in/mariaconstanzaflorio)
+- [Maria Constanza Florio](https://www.linkedin.com/in/mariaconstanzaflorio/)
 - [Marianela Sansone Betella](https://www.linkedin.com/in/marianela-sansone/)
 
 ## ✔️Corridas finales✔️:
