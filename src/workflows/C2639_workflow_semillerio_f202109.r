@@ -100,7 +100,7 @@ FEintra_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/0531_FE_intrames.r"
+  param_local$meta$script <- "/src/workflows/0531_FE_intrames.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -115,7 +115,7 @@ DR_drifting_base <- function( pinputexps, metodo)
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/0541_DR_corregir_drifting.r"
+  param_local$meta$script <- "/src/workflows/0541_DR_corregir_drifting.r"
 
   # valores posibles
   #  "ninguno", "rank_simple", "rank_cero_fijo", "deflacion", "estandarizar"
@@ -133,7 +133,7 @@ FEhist_base <- function( pinputexps)
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/0551_FE_historia.r"
+  param_local$meta$script <- "/src/workflows/0551_FE_historia.r"
 
   param_local$lag1 <- TRUE
   param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
