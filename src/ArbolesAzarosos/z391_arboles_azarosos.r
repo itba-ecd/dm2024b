@@ -25,6 +25,7 @@ PARAM$corridas <- data.table(
   "minsplit" = c( 50, 100, 250, 500, 1000, 1000),
   "minbucket" = c( 20, 50, 50, 20, 5, 50),
   "maxdepth" = c( 6, 8, 8, 10, 10, 6 )
+
 )
 
 # parametros  arbol

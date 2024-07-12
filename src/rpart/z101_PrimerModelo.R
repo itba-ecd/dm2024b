@@ -7,7 +7,7 @@ require("rpart")
 require("rpart.plot")
 
 # Aqui se debe poner la carpeta de la materia de SU computadora local
-setwd("X:\\gdrive\\itba2024a\\") # Establezco el Working Directory
+setwd("C:/Users/flori/Desktop/ITBA DS/datamining") # Establezco el Working Directory
 
 # cargo el dataset
 dataset <- fread("./datasets/dataset_pequeno.csv")
@@ -21,26 +21,26 @@ modelo <- rpart(
         formula = "clase_ternaria ~ .",
         data = dtrain, # los datos donde voy a entrenar
         xval = 0,
-        cp = -0.3, # esto significa no limitar la complejidad de los splits
-        minsplit = 0, # minima cantidad de registros para que se haga el split
-        minbucket = 1, # tamaño minimo de una hoja
-        maxdepth = 3
+        cp = -895507120175341, # esto significa no limitar la complejidad de los splits
+        minsplit = 1075, # minima cantidad de registros para que se haga el split
+        minbucket = 530, # tamaño minimo de una hoja
+        maxdepth = 5
 ) # profundidad maxima del arbol
 
 
 # grafico el arbol
+pdf("arbolito_010.pdf") ### esto es para generar pdfs
 prp(modelo,
         extra = 101, digits = -5,
         branch = 1, type = 4, varlen = 0, faclen = 0
 )
-
+dev.off() ## para generar pdfs
 
 # aplico el modelo a los datos nuevos
 prediccion <- predict(
         object = modelo,
         newdata = dapply,
-        type = "prob"
-)
+        type = "prob")
 
 # prediccion es una matriz con TRES columnas,
 # llamadas "BAJA+1", "BAJA+2"  y "CONTINUA"
